@@ -39,14 +39,16 @@ finish = False
 clock = time.Clock()
 FPS = 60
 
+ball_skins = ['tenis_ball.png', 'basketball_ball.png', 'golf_ball.png']
 
 racket1 = Player('racket.png', 30, 200, 10, 50, 150)
 racket2 = Player('racket.png', 520, 200, 10, 50, 150)
 
-ball = GameSprite('tenis_ball.png', randint(175, 225), randint(175, 225), 4, 50, 50)
+ball = GameSprite(ball_skins[randint(0, len(ball_skins) - 1)], randint(175, 225), randint(175, 225), 4, 50, 50)
 
 font.init()
 font = font.Font(None, 35)
+
 lose1 = font.render('PLAYER 1 LOSE', True, (100, 0, 0))
 lose2 = font.render('PLAYER 2 LOSE', True, (100, 0, 0))
 
@@ -54,6 +56,10 @@ rand_speed = [-1, 1]
 
 speed_x = 3 * rand_speed[randint(0,1)]
 speed_y = 3 * rand_speed[randint(0,1)]
+
+score1 = 0
+score2 = 0
+
 
 
 while game:
@@ -70,6 +76,16 @@ while game:
         ball.rect.x += speed_x
         ball.rect.y += speed_y
 
+        score_board = font.render(f"{score1} : {score2}", True, (0, 100, 0))
+        window.blit(score_board, (275, 20))
+
+        if score1 >= 3 or score2 >= 3:
+            finish = True
+            if score1 >= 3:
+                window.blit(lose2, (200, 200))
+            else:
+                window.blit(lose1, (200, 200))
+
         if sprite.collide_rect(racket1, ball) or sprite.collide_rect(racket2, ball):
             speed_x *= -1
         
@@ -78,12 +94,14 @@ while game:
         
 
         if ball.rect.x < 0:
-            finish =  True
-            window.blit(lose1, (200, 200))
+            score2 += 1
+            ball.rect.x = randint(175, 225)
+            ball.rect.y = randint(175, 225)
         
         if ball.rect.x > win_width - 50:
-            finish =  True
-            window.blit(lose2, (200, 200))
+            score1 += 1
+            ball.rect.x = randint(175, 225)
+            ball.rect.y = randint(175, 225)
 
         racket1.reset()
         racket2.reset()
