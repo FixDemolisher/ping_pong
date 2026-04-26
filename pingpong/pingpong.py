@@ -1,4 +1,5 @@
 from pygame import *
+from random import randint
 
 class GameSprite(sprite.Sprite):
     def __init__(self, player_image, player_x, player_y, player_speed, width, height):
@@ -42,15 +43,17 @@ FPS = 60
 racket1 = Player('racket.png', 30, 200, 10, 50, 150)
 racket2 = Player('racket.png', 520, 200, 10, 50, 150)
 
-ball = GameSprite('tenis_ball.png', 200, 200, 4, 50, 50)
+ball = GameSprite('tenis_ball.png', randint(175, 225), randint(175, 225), 4, 50, 50)
 
 font.init()
 font = font.Font(None, 35)
 lose1 = font.render('PLAYER 1 LOSE', True, (100, 0, 0))
 lose2 = font.render('PLAYER 2 LOSE', True, (100, 0, 0))
 
-speed_x = 3
-speed_y = 3
+rand_speed = [-1, 1]
+
+speed_x = 3 * rand_speed[randint(0,1)]
+speed_y = 3 * rand_speed[randint(0,1)]
 
 
 while game:
