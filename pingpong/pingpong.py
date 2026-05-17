@@ -31,7 +31,7 @@ class Player(GameSprite):
 
 back = (200, 255, 255)
 win_height = 500
-win_width = 600
+win_width = 800
 window = display.set_mode((win_width, win_height))
 
 game = True
@@ -41,10 +41,21 @@ FPS = 60
 
 ball_skins = ['tenis_ball.png', 'basketball_ball.png', 'golf_ball.png']
 
+
+mixer.init()
+
+table_kick = mixer.Sound("tk.ogg")
+rocet_kick = mixer.Sound("rk.ogg")
+
+mixer.music.load('dapstep.ogg')
+mixer.music.play(-1)
+
+
 racket1 = Player('racket.png', 30, 200, 10, 50, 150)
-racket2 = Player('racket.png', 520, 200, 10, 50, 150)
+racket2 = Player('racket.png', win_width-80, 200, 10, 50, 150)
 
 ball = GameSprite(ball_skins[randint(0, len(ball_skins) - 1)], randint(175, 225), randint(175, 225), 4, 50, 50)
+
 
 font.init()
 font = font.Font(None, 35)
@@ -52,7 +63,9 @@ font = font.Font(None, 35)
 lose1 = font.render('PLAYER 1 LOSE', True, (100, 0, 0))
 lose2 = font.render('PLAYER 2 LOSE', True, (100, 0, 0))
 
+
 rand_speed = [-1, 1]
+
 
 speed_x = 3 * rand_speed[randint(0,1)]
 speed_y = 3 * rand_speed[randint(0,1)]
@@ -60,7 +73,7 @@ speed_y = 3 * rand_speed[randint(0,1)]
 score1 = 0
 score2 = 0
 
-
+background = transform.scale(image.load('background.jpg'), (win_width, win_height))
 
 while game:
     for e in event.get():
@@ -68,7 +81,7 @@ while game:
             game = False
 
     if not(finish):
-        window.fill(back)
+        window.blit(background, (0, 0))
 
         racket1.update_l()
         racket2.update_r()
@@ -76,21 +89,23 @@ while game:
         ball.rect.x += speed_x
         ball.rect.y += speed_y
 
-        score_board = font.render(f"{score1} : {score2}", True, (0, 100, 0))
-        window.blit(score_board, (275, 20))
+        score_board = font.render(f"{score1} : {score2}", True, (255, 255, 255))
+        window.blit(score_board, (374, 20))
 
         if score1 >= 3 or score2 >= 3:
             finish = True
             if score1 >= 3:
-                window.blit(lose2, (200, 200))
+                window.blit(lose2, (300, 200))
             else:
-                window.blit(lose1, (200, 200))
+                window.blit(lose1, (300, 200))
 
         if sprite.collide_rect(racket1, ball) or sprite.collide_rect(racket2, ball):
             speed_x *= -1
+            rocet_kick.play()
         
         if ball.rect.y < 0 or ball.rect.y > win_height - 50:
             speed_y *= -1
+            table_kick.play()
         
 
         if ball.rect.x < 0:
